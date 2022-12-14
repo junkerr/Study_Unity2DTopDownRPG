@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
 
+    float speed;
+
     float h;
     float v;
 
@@ -12,6 +14,7 @@ public class PlayerMove : MonoBehaviour
 
     void Awake()
     {
+        speed = 2f;
         rigid = GetComponent<Rigidbody2D>();
     }
 
@@ -23,6 +26,6 @@ public class PlayerMove : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rigid.velocity = new Vector2(h, v);
+        rigid.velocity = new Vector2(h, v * speed);
     }
 }
