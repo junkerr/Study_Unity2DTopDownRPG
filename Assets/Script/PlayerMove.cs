@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
 
+    public GameManager gameManager;
+
     Rigidbody2D rigid;
     Animator anim;
     Vector3 dirVector;
@@ -25,12 +27,12 @@ public class PlayerMove : MonoBehaviour
     void Update()
     {
         // Move Value
-        h = Input.GetAxisRaw("Horizontal");
-        v = Input.GetAxisRaw("Vertical");
+        h = gameManager.isAction ? 0 : Input.GetAxisRaw("Horizontal");
+        v = gameManager.isAction ? 0 : Input.GetAxisRaw("Vertical");
 
         // Check Button Down & Up
-        bool inputH = Input.GetButton("Horizontal");
-        bool inputV = Input.GetButton("Vertical");
+        bool inputH = gameManager.isAction ? false : Input.GetButton("Horizontal");
+        bool inputV = gameManager.isAction ? false : Input.GetButton("Vertical");
 
         // Check Horizontal Move
         if (inputH)
@@ -81,7 +83,8 @@ public class PlayerMove : MonoBehaviour
         // Scan Object
         if (Input.GetButtonDown("Jump") && scanObject != null)
         {
-            Debug.Log("scanObject : " + scanObject.name);
+            //Debug.Log("scanObject : " + scanObject.name);
+            gameManager.Action(scanObject);
         }
 
     }
