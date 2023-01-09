@@ -7,6 +7,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public TalkManager talkManager;
+    public QuestManager questManager;
     public TextMeshProUGUI talkText;
     public GameObject scanObject;
     public GameObject talkPanel;
@@ -18,6 +19,8 @@ public class GameManager : MonoBehaviour
     {
         isAction = false;
         talkPanel.SetActive(false);
+
+        questManager.CheckQuest();
     }
 
     public void Action(GameObject scanObj)
@@ -32,12 +35,15 @@ public class GameManager : MonoBehaviour
 
     void Talk(int id, bool isNpc)
     {
-        string talkData = talkManager.GetTalk(id, talkIndex);
+        int questTalkIndex = questManager.GetQuestTalkIndexe(id);
+
+        string talkData = talkManager.GetTalk(id + questTalkIndex, talkIndex);
 
         if (talkData == null)
         {
             isAction = false;
             talkIndex = 0;
+            Debug.Log(questManager.CheckQuest(id));
             return;
         }
 

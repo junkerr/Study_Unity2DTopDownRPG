@@ -19,7 +19,7 @@ public class PlayerMove : MonoBehaviour
 
     void Awake()
     {
-        speed = 2f;
+        speed = 5f;
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }

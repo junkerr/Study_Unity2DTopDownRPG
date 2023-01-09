@@ -2,17 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuestData : MonoBehaviour
+public class QuestData
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string questName;
+    public int[] npcId; // 퀘스트 대화할 NPC들 순번
 
-    // Update is called once per frame
-    void Update()
+    public QuestData(string name, int[] npc)
     {
-        
+        questName = name;
+        npcId = npc;
     }
 }
