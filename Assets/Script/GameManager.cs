@@ -10,8 +10,14 @@ public class GameManager : MonoBehaviour
     public TalkManager talkManager;
     public QuestManager questManager;
     //public TextMeshProUGUI talkText;
+    public TextMeshProUGUI talkNpcName;
+
+    public GameObject player;
+
+    public TextMeshProUGUI questText;
     public TypeEffect talk;
     public GameObject scanObject;
+    public GameObject menuSet;
     public Animator talkPanel;
     public Animator portaitAnim;
     public Image portraitImage;
@@ -22,24 +28,50 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        GameLoad();
         isAction = false;
         //talkPanel.SetActive(false);
-
-        questManager.CheckQuest();
+        questText.text = questManager.CheckQuest();
     }
+
+    private void Update()
+    {
+        // Sub Menu
+        if (Input.GetButtonDown("Cancel"))
+        {
+            if (menuSet.activeSelf)
+            {
+                menuSet.SetActive(false);
+            }
+            else
+            {
+                menuSet.SetActive(true);
+            }
+        }
+    }
+
 
     public void Action(GameObject scanObj)
     {
         scanObject = scanObj;
         ObjData objData = scanObject.GetComponent<ObjData>();
-        Talk(objData.id, objData.isNpc);
+
+        string npcName = string.Empty;
+        if(objData.isNpc)
+        {
+            npcName = scanObject.name;
+        }
+
+        Talk(objData.id, objData.isNpc, npcName);
 
         talkPanel.SetBool("isShow", isAction);
 
     }
 
-    void Talk(int id, bool isNpc)
+    void Talk(int id, bool isNpc, string objectName)
     {
+        talkNpcName.text = objectName;
+
 
         int questTalkIndex = 0;
         string talkData = "";
@@ -58,7 +90,7 @@ public class GameManager : MonoBehaviour
         {
             isAction = false;
             talkIndex = 0;
-            Debug.Log(questManager.CheckQuest(id));
+            questText.text = questManager.CheckQuest(id);
             return;
         }
 
@@ -73,6 +105,7 @@ public class GameManager : MonoBehaviour
             // Animation Portrait
             if (prevPortrait != portraitImage)
             {
+                talkNpcName.text = "";
                 portaitAnim.SetTrigger("doEffect");
                 prevPortrait = portraitImage.sprite;
             }
@@ -89,5 +122,42 @@ public class GameManager : MonoBehaviour
 
         isAction = true;
         talkIndex++;
+    }
+
+    public void GameSave()
+    {
+        // QuestID
+        // QuestIndex
+        // 캐릭터의 현재위치 
+        PlayerPrefs.SetFloat("PlayerX", player.transform.position.x);
+        PlayerPrefs.SetFloat("PlayerY", player.transform.position.y);
+        PlayerPrefs.SetInt("QuestId", questManager.questId);
+        PlayerPrefs.SetInt("QuestActionindex", questManager.questActionIndex);
+        PlayerPrefs.Save();
+
+        menuSet.SetActive(false);
+    }
+
+    public void GameLoad()
+    {
+        // 한번이라도 저장했는지 체크
+        if (PlayerPrefs.HasKey("PlayerX"))
+        {
+            float x = PlayerPrefs.GetFloat("PlayerX");
+            float y = PlayerPrefs.GetFloat("PlayerY");
+            int questId = PlayerPrefs.GetInt("QuestId");
+            int questActionIndex = PlayerPrefs.GetInt("QuestActionindex");
+
+            player.transform.position = new Vector3(x, y, 0);
+            questManager.questId = questId;
+            questManager.questActionIndex = questActionIndex;
+            questManager.ControlObject();
+        }
+
+    }
+
+    public void GameExit()
+    {
+        Application.Quit();
     }
 }
