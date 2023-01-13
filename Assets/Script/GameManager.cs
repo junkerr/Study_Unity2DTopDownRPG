@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
     public bool isAction;
 
     public Sprite prevPortrait;
-
     private void Start()
     {
         GameLoad();
@@ -39,17 +38,21 @@ public class GameManager : MonoBehaviour
         // Sub Menu
         if (Input.GetButtonDown("Cancel"))
         {
-            if (menuSet.activeSelf)
-            {
-                menuSet.SetActive(false);
-            }
-            else
-            {
-                menuSet.SetActive(true);
-            }
+            SubMenuActive();
         }
     }
 
+    public void SubMenuActive()
+    {
+        if (menuSet.activeSelf)
+        {
+            menuSet.SetActive(false);
+        }
+        else
+        {
+            menuSet.SetActive(true);
+        }
+    }
 
     public void Action(GameObject scanObj)
     {
@@ -67,7 +70,6 @@ public class GameManager : MonoBehaviour
         talkPanel.SetBool("isShow", isAction);
 
     }
-
     void Talk(int id, bool isNpc, string objectName)
     {
         talkNpcName.text = objectName;
@@ -137,7 +139,6 @@ public class GameManager : MonoBehaviour
 
         menuSet.SetActive(false);
     }
-
     public void GameLoad()
     {
         // 한번이라도 저장했는지 체크
@@ -155,7 +156,6 @@ public class GameManager : MonoBehaviour
         }
 
     }
-
     public void GameExit()
     {
         Application.Quit();

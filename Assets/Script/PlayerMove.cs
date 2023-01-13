@@ -2,6 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public class MobileKey
+{
+    public int CurrentValue { get; set; }
+
+    public bool isKeyDown { get; set; }
+
+    public MobileKey()
+    {
+        CurrentValue = 0;
+        isKeyDown = false;
+    }
+}
+
 public class PlayerMove : MonoBehaviour
 {
     public GameManager gameManager;
@@ -16,22 +30,43 @@ public class PlayerMove : MonoBehaviour
     float v;
     bool isHorizonMove;
 
+    MobileKey downKey;
+    MobileKey upKey;
+    MobileKey leftKey;
+    MobileKey rightKey;
+
     void Awake()
     {
         speed = 5f;
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+
+        downKey = new MobileKey();
+        upKey = new MobileKey(); ;
+        leftKey = new MobileKey(); ;
+        rightKey = new MobileKey(); ;
     }
 
     void Update()
     {
         // Move Value
-        h = gameManager.isAction ? 0 : Input.GetAxisRaw("Horizontal");
-        v = gameManager.isAction ? 0 : Input.GetAxisRaw("Vertical");
+        // PC
+        h = gameManager.isAction ? 0 : Input.GetAxisRaw("Horizontal") + rightKey.CurrentValue + leftKey.CurrentValue;
+        v = gameManager.isAction ? 0 : Input.GetAxisRaw("Vertical") + upKey.CurrentValue + downKey.CurrentValue;
+
+        // Mobile
+        //h = gameManager.isAction ? 0 : rightKey.CurrentValue + leftKey.CurrentValue;
+        //v = gameManager.isAction ? 0 : upKey.CurrentValue + downKey.CurrentValue;
 
         // Check Button Down & Up
-        bool inputH = gameManager.isAction ? false : Input.GetButton("Horizontal");
-        bool inputV = gameManager.isAction ? false : Input.GetButton("Vertical");
+        // PC
+        bool inputH = gameManager.isAction ? false : Input.GetButton("Horizontal") || rightKey.isKeyDown || leftKey.isKeyDown;
+        bool inputV = gameManager.isAction ? false : Input.GetButton("Vertical") || upKey.isKeyDown || downKey.isKeyDown;
+
+        // Mobile
+        //bool inputH = gameManager.isAction ? false : rightKey.isKeyDown || leftKey.isKeyDown;
+        //bool inputV = gameManager.isAction ? false : upKey.isKeyDown || downKey.isKeyDown;
+
 
         // Check Horizontal Move
         if (inputH)
@@ -85,7 +120,6 @@ public class PlayerMove : MonoBehaviour
             //Debug.Log("scanObject : " + scanObject.name);
             gameManager.Action(scanObject);
         }
-
     }
 
     private void FixedUpdate()
@@ -105,6 +139,75 @@ public class PlayerMove : MonoBehaviour
         else
         {
             scanObject = null;
+        }
+    }
+
+    public void ButtonDown(string button)
+    {
+        switch (button)
+        {
+            case "U":
+                upKey.CurrentValue = 1;
+                upKey.isKeyDown = true;
+                break;
+
+            case "D":
+                downKey.CurrentValue = -1;
+                downKey.isKeyDown = true;
+                break;
+
+            case "L":
+                leftKey.CurrentValue = -1;
+                leftKey.isKeyDown = true;
+                break;
+
+            case "R":
+                rightKey.CurrentValue = 1;
+                rightKey.isKeyDown = true;
+                break;
+
+            case "A":
+                // Scan Object
+                if (scanObject != null)
+                {
+                    gameManager.Action(scanObject);
+                }
+                break;
+
+            case "C":
+                gameManager.SubMenuActive();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void ButtonUp(string button)
+    {
+        switch (button)
+        {
+            case "U":
+                upKey.CurrentValue = 0;
+                upKey.isKeyDown = false;
+                break;
+
+            case "D":
+                downKey.CurrentValue = 0;
+                downKey.isKeyDown = false;
+                break;
+
+            case "L":
+                leftKey.CurrentValue = 0;
+                leftKey.isKeyDown = false;
+                break;
+
+            case "R":
+                rightKey.CurrentValue = 0;
+                rightKey.isKeyDown = false;
+                break;
+
+            default:
+                break;
         }
     }
 }
