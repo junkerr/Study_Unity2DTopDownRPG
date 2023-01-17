@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
         ObjData objData = scanObject.GetComponent<ObjData>();
 
         string npcName = string.Empty;
-        if(objData.isNpc)
+        if (objData.isNpc)
         {
             npcName = scanObject.name;
         }
@@ -107,7 +107,6 @@ public class GameManager : MonoBehaviour
             // Animation Portrait
             if (prevPortrait != portraitImage)
             {
-                talkNpcName.text = "";
                 portaitAnim.SetTrigger("doEffect");
                 prevPortrait = portraitImage.sprite;
             }
@@ -149,7 +148,7 @@ public class GameManager : MonoBehaviour
             int questId = PlayerPrefs.GetInt("QuestId");
             int questActionIndex = PlayerPrefs.GetInt("QuestActionindex");
 
-            player.transform.position = new Vector3(x, y, 0);
+            player.transform.position = new Vector3(x, y, -2);
             questManager.questId = questId;
             questManager.questActionIndex = questActionIndex;
             questManager.ControlObject();
@@ -159,5 +158,13 @@ public class GameManager : MonoBehaviour
     public void GameExit()
     {
         Application.Quit();
+    }
+
+    public void GameInit()
+    {
+        player.transform.position = new Vector3(0, 0, -2);
+        questManager.questId = 10;
+        questManager.questActionIndex = 0;
+        questManager.ControlObject();
     }
 }
